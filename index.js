@@ -7,6 +7,12 @@ var startTime = performance.now();
 const jsonString = fs.readFileSync('./input.json');
 const input = JSON.parse(jsonString);
 
+/**
+ * Returns value Segment Key.
+ *
+ * @param {string} value Segment Value.
+ * @return {string} value Segment Key.
+ */
 const segmentKey = (value) => {
   switch (value) {
     case 'Full Game':
@@ -20,6 +26,12 @@ const segmentKey = (value) => {
   }
 };
 
+/**
+ * Returns event Transformed Sporting Event.
+ *
+ * @param {object} event Sporting Event Object.
+ * @return {string} event Transformed Sporting Event.
+ */
 const formateSportingEvent = (event) => {
   return {
     id: event.iGameCodeGlobalId,
@@ -58,6 +70,7 @@ _.forOwn(input.data.sporting_events, function (value) {
   });
 });
 
+//Transform Slate Events
 input.data.slate_events.forEach(function (value) {
   let date = value.date + ' ' + value.time.substring(0, value.time.length - 2);
   delete value.time;
@@ -80,12 +93,14 @@ input.data.slate_events.forEach(function (value) {
   });
 });
 
-const res = _.chain(_sportingEvent)
+//Group Sporting Events by Team and Event date and time
+const groupSportEvents = _.chain(_sportingEvent)
   .groupBy('visitingTeam')
   .mapValues((ageArr) => _.groupBy(ageArr, (ageObj) => ageObj.uts))
   .value();
 
-_.forOwn(res, function (sportEvents) {
+//Pushing Final Sporting Events to array
+_.forOwn(groupSportEvents, function (sportEvents) {
   _.forOwn(sportEvents, function (value) {
     if (value.length > 1) {
       const events = [];
@@ -111,10 +126,12 @@ _.forOwn(res, function (sportEvents) {
   });
 });
 
-let sorted = _list.sort(function (a, b) {
+//Sorting based on date and time (asc)
+const sorted = _list.sort(function (a, b) {
   return a.date - b.date;
 });
 
+//Removing unwanted date from the final list
 const finalOutput = sorted.map((event) => {
   return {
     ...event,
@@ -122,6 +139,7 @@ const finalOutput = sorted.map((event) => {
   };
 });
 
+//Saving date to output.json
 fs.writeFile(
   'output.json',
   JSON.stringify(finalOutput, null, 2),
