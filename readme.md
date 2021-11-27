@@ -2,7 +2,7 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/rishabh-90/transform-data
+git clone https://github.com/rishabh-90/transform-data-node.git
 
 # navigate to project folder
 cd <project-folder>
