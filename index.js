@@ -63,7 +63,8 @@ const _list = [];
 const _sportingEvent = [];
 
 _.forOwn(input.data.sporting_events, function (value) {
-  let date = value.date + ' ' + value.time.substring(0, value.time.length - 2);
+  const date =
+    value.date + ' ' + value.time.substring(0, value.time.length - 2);
   _sportingEvent.push({
     ...value,
     date: new Date(date.substr(0, date.length - 2) + date.substr(-2)),
@@ -72,7 +73,8 @@ _.forOwn(input.data.sporting_events, function (value) {
 
 //Transform Slate Events
 input.data.slate_events.forEach(function (value) {
-  let date = value.date + ' ' + value.time.substring(0, value.time.length - 2);
+  const date =
+    value.date + ' ' + value.time.substring(0, value.time.length - 2);
   delete value.time;
   _list.push({
     event: {
